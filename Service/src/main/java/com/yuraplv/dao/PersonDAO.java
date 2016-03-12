@@ -4,6 +4,6 @@ import java.sql.SQLException;
 
 public interface PersonDAO {
 
-    public boolean createPerson(String personName) throws SQLException;
+    boolean createPerson(String personName) throws SQLException, ClassNotFoundException;
 
 }

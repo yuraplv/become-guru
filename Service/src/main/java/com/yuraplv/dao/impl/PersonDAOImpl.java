@@ -1,28 +1,26 @@
 package com.yuraplv.dao.impl;
 
-import com.mysql.jdbc.Driver;
+import com.yuraplv.dao.GenericDAO;
 import com.yuraplv.dao.PersonDAO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class PersonDAOImpl implements PersonDAO {
+public class PersonDAOImpl extends GenericDAO implements PersonDAO {
 
     private static Connection con = null;
-    private static String username = "yuraplv";
-    private static String password = "6176";
-    private static String URL = "jdbc:mysql://localhost:3306/yuraplv";
 
-    public boolean createPerson(String personName) throws SQLException {
+    public boolean createPerson(String personName) throws SQLException, ClassNotFoundException {
 
-        DriverManager.deregisterDriver(new Driver());
+        //STEP 2: Register JDBC driver
         PreparedStatement statement = null;
         try {
-            con = DriverManager.getConnection(URL, username, password);
+            con = getConnection();
             con.setAutoCommit(false);
             statement = con.prepareStatement("INSERT INTO PERSON(NAME) VALUES (?)");
             statement.setString(1, personName);
             statement.execute();
-
             try {
                 throw new RuntimeException();
             } catch (RuntimeException e) {
@@ -40,11 +38,6 @@ public class PersonDAOImpl implements PersonDAO {
 
 
         return true;
-    }
-
-    public static void main(String[] args) throws SQLException {
-        new PersonDAOImpl().createPerson("name5");
-
     }
 
 }
