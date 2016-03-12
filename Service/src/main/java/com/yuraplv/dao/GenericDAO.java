@@ -14,15 +14,28 @@ public class GenericDAO {
         loadProperties();
     }
 
+    private Connection connection;
+
     protected Connection getConnection() throws SQLException {
         String URL = properties.getProperty("url");
         String username = properties.getProperty("username");
         String password = properties.getProperty("password");
-        return DriverManager.getConnection(URL, username, password);
+        connection = DriverManager.getConnection(URL, username, password);
+        return connection;
+    }
+
+    protected void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static void loadProperties() {
-        try(InputStream asStream = GenericDAO.class.getResourceAsStream("connection.properties")) {
+        try(InputStream asStream = GenericDAO.class.getClassLoader().getResourceAsStream("connection.properties")) {
             Class.forName("com.mysql.jdbc.Driver");
             properties.load(asStream);
         } catch (Exception e) {

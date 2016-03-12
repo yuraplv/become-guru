@@ -11,7 +11,7 @@ public class PersonDAOImpl extends GenericDAO implements PersonDAO {
 
     private static Connection con = null;
 
-    public boolean createPerson(String personName) throws SQLException, ClassNotFoundException {
+    public boolean createPerson(String personName) {
 
         //STEP 2: Register JDBC driver
         PreparedStatement statement = null;
@@ -21,18 +21,18 @@ public class PersonDAOImpl extends GenericDAO implements PersonDAO {
             statement = con.prepareStatement("INSERT INTO PERSON(NAME) VALUES (?)");
             statement.setString(1, personName);
             statement.execute();
-            try {
-                throw new RuntimeException();
-            } catch (RuntimeException e) {
-                con.rollback();
-            }
+            con.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            closeConnection();
         } finally {
-            if (con != null) {
-                con.close();
-            }
-
-            if (statement != null) {
-                statement.close();
+            try {
+                closeConnection();
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
