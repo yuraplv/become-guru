@@ -24,6 +24,7 @@ public class PersonDAOImpl extends GenericDAO implements PersonDAO {
             try {
                 throw new RuntimeException();
             } catch (RuntimeException e) {
+
                 con.rollback();
             }
         } finally {
